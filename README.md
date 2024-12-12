@@ -51,7 +51,7 @@ Use Gradio demo
    *  Input: Two Dataframes (1 Japanese and 1 Spanish) with "abstract" and "contribution" column. 
    *  Output: test data (`csvFiles/papers_EStoEN.csv`, `csvFiles/papers_JPtoEN.csv`)
 
-**Jupyter notebooks**<br>
+**Python file**<br>
 1. PreProcessesDFs_CasaInternational.py
    *  Function: Combine training data prepared by team members and preprocess the text for fine-tuning. Used to create training dataset.
    *  Input: Fragmented training data prepared by team members
