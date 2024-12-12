@@ -2,36 +2,64 @@
 This is a project completed for the graduate Natural Language Processing course taught at UT Austin by Professor Abhijit Mishra during the Fall 2024 semester.
 
 # How to Run?
-We have attached 5 Jupyter Notebooks and 1 Python file.
+We have attached 5 Jupyter Notebooks, 1 Python file and 5 CSV files.
 
-To receive the same results for our best model, in this case BART, please follow these instructions:
+**To replicate our results in the report with fine-tuned BART model:** <br>
+Following 3 notebooks are crutial to replicate our result.
+  * `BART_CasaInternational.ipynb` (Notebook to fine-tune BART model)
+  * `runModel_BART_CasaInternational.ipynb` (Notebook to extract summary using plain and fine-tuned BART model)
+  * `evaluator_CasaInternational.ipynb` (Evaluate summary produced above using BLEU, METEOR, ROUGE and BERT scores)
 
-1. Will you be using combinedDF?
-  <br>a. No.
-  <br>Run the Python file after ensuring that jose_English and ryotaro_English are in the same directory. This will return the combinedDF as the final saved CSV.
-  <br>b. Yes.
-  <br>Continue to 2.
-2. Will you be using the pre-Translated papers?
-  <br>a. No.
-  <br> Run the paperTranslation notebook in the same directory as jose_Spanish and ryotaro_Japanese. This will return the translated papers as a CSV.
-  <br>b. Yes.
-  <br> Continue to 3.
-3. Run the extractContributions_BART notebook
-   <br>Ensure the translated papers in the same directory. This will return CSV's of the abstract, the reference summary and the computer generated summary.
-   <br>Then proceed to 4.
-5. Run the evaluator notebook
-   <br>Ensure the summaries from the translated papers are in the same directory. This program will return the scores from the following metrics:
-   <br>**BLEU**
-   <br>**ROUGE**
-   <br>**METEOR**
-   <br>**BERTScore**
-   <br> ROUGE and BERTScore will also return their precision, recall and F1 score.
+Follow steps below.
+  1.  Replicate 3 notebooks described above and `csvFiles` folder (includes train & test data) to the environment you want to run the model
+  2.  Run 3 notebooks in the same order as described above
+  3.  Inspect resulting 4 CSV files (Result for plain and fine-tuned model both for Japanese and Spanish abstracts)
 
-<br>Following these steps will allow anyone who has downloaded our files to run this program and recreate what we did.
-<br>Final report to be added when completed.
-<br>Bonus: We have included the notebook for a gradio demo. Feel free to insert your own English abstracts or any abstract in the currently supported lanuages (Spanish and Japanese).
+**To test the pipeline with an abstract of your choice:** <br>
+Use Gradio demo
+  *  Run `demo_CasaInternational.ipynb`
+  *  Input abstract of your choice (Japanese, Spanish or English). Note this will just return summarization, not evaluation scores.
 
-Members of CasaInternational:
-<br>Ryotaro Takehara
-<br>Jose Torres
-<br>Naila Hajiyeva
+# Detailed description of code files<br>
+**Jupyter notebooks**<br>
+1. BART_CasaInternational.ipynb
+   *  Function: Import `facebook/bart-large-cnn` model, fine-tune using training data and return fine-tuned model
+   *  Input: Train data (`csvFiles/combinedDF.csv`)
+   *  Output: Fine-tuned model (`./fine_tuned_BART_summarization`)
+
+2. runModel_BARTcasaInternational.ipynb
+   *  Function: Import both plain & fine-tuned `facebook/bart-large-cnn` models. Run models and return summarized abstracts generated from test data
+   *  Input:
+      - Fine-tuned model: `./fine_tuned_BART_summarization`
+      - test data(`csvFiles/papers_EStoEN.csv`, `csvFiles/papers_JPtoEN.csv`)
+   *  Output: Summarized test data (`summarization_BART_JP.csv`,`summarization_BART_ES.csv`)
+
+3. evaluator_CasaInternational.ipynb
+   *  Function: Evaluate the quality of summarized test data using BLEU, METEOR, ROUGE, BERT score. ROUGE includes ROUGE-1,2, and L. Both ROUGE and BERT returns precision, recall, and F1 score.
+   *  Input:
+      - Summarized test data: `summarization_BART_JP.csv`,`summarization_BART_ES.csv`
+      - Reference summary (`csvFiles/papers_EStoEN.csv`, `csvFiles/papers_JPtoEN.csv`)
+   *  Output: Scores for plain and fine-tuned model (`scores_JP_BART.csv`,`scores_JP_BART_ft.csv`,`scores_ES_BART.csv`,`scores_ES_BART_ft.csv`)
+  
+4. demo_CasaInternational.ipynb
+   *  Function: Activate Gradio demo to test the pipeline with arbitrary abstract in either Japanese, Spanish or English
+   *  Input: Fine-tuned model: `./fine_tuned_BART_summarization`
+   *  Output: None
+
+5. paperTranslation_CasaInternational.ipynb
+   *  Function: Clean non-English abstract & summary and translate to English using `facebook/seamless-m4t-v2-large`. Used to prepare test dataset.
+   *  Input: Two Dataframes (1 Japanese and 1 Spanish) with "abstract" and "contribution" column. 
+   *  Output: test data (`csvFiles/papers_EStoEN.csv`, `csvFiles/papers_JPtoEN.csv`)
+
+**Jupyter notebooks**<br>
+1. PreProcessesDFs_CasaInternational.py
+   *  Function: Combine training data prepared by team members and preprocess the text for fine-tuning. Used to create training dataset.
+   *  Input: Fragmented training data prepared by team members
+   *  Output: Train data (`csvFiles/combinedDF.csv`)
+
+----------------------------------------
+
+Members of CasaInternational:<br>
+***Ryotaro Takehara***<br>
+***Jose Torres***<br>
+***Naila Hajiyeva***<br>
